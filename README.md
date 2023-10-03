@@ -25,4 +25,4 @@ Ankiデッキ抽出プログラム
 
 ## 改善・バグ報告
 
-バグや改善の提案がある場合は、[issue](https://github.com/example/anki-deck-extractor/issues)を作成してください。
+バグや改善の提案がある場合は、[issue](https://github.com/jankendo/ANKI_Fomatter/issues)を作成してください。
