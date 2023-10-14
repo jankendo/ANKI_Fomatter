@@ -9,6 +9,10 @@ import langdetect
 
 import json
 
+APKG_EXTENSION = ".apkg"
+JSON_EXTENSION = ".json"
+OUTPUT_FOLDER = "./json"
+
 
 def extract_fields(file_path, output_path, decknum):
     with zipfile.ZipFile(file_path, 'r') as zip_ref:
@@ -64,19 +68,18 @@ def detect_language(text):
 def main():
     folder_path = easygui.diropenbox()
 
-    output_folder = "./json"
-    os.makedirs(output_folder, exist_ok=True)
+    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
     decknum = 0
 
     for entry in os.scandir(folder_path):
-        if entry.name.endswith(".apkg"):
+        if entry.name.endswith(APKG_EXTENSION):
             # outputフォルダが存在する場合はフォルダごと削除
             if os.path.exists('output'):
                 shutil.rmtree('output')
 
-            output_file = os.path.splitext(entry.name)[0] + ".json"
-            output_path = Path(output_folder) / output_file
+            output_file = os.path.splitext(entry.name)[0] + JSON_EXTENSION
+            output_path = Path(OUTPUT_FOLDER) / output_file
 
             # jsonファイルが存在する場合はスキップ
             extracted_path = extract_fields(entry.path, output_path, decknum)
