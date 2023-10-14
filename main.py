@@ -1,9 +1,12 @@
 import os
-import re
 import shutil
 import sqlite3
-import tkinter.filedialog as filedialog
 import zipfile
+from pathlib import Path
+
+import easygui
+import langdetect
+
 import json
 
 
@@ -36,7 +39,7 @@ def extract_fields(file_path, output_path, decknum):
                     "mp3Path": f"public/decks/deck1/audio/{cardnum}.mp3",
                     "genre": "none",
                     "word": fild[0],
-                    "wordtrn":fild[1],
+                    "wordtrn": fild[1],
                     "sentence": eng,
                     "blank": convert_to_blank_sentence(eng),
                     "japanese": jpn,
@@ -55,32 +58,32 @@ def convert_to_blank_sentence(sentence):
 
 
 def detect_language(text):
-    japanese_range = (ord(u"ぁ"), ord(u"ゟ"))
-    return any(japanese_range[0] <= ord(char) <= japanese_range[1] for char in text)
+    return langdetect.detect(text) == 'ja'
 
 
 def main():
-    root = filedialog.Tk()
-    root.withdraw()
-    folder_path = filedialog.askdirectory()
+    folder_path = easygui.diropenbox()
 
     output_folder = "./json"
     os.makedirs(output_folder, exist_ok=True)
 
     decknum = 0
 
-    for file_path in os.listdir(folder_path):
-        if file_path.endswith(".apkg"):
+    for entry in os.scandir(folder_path):
+        if entry.name.endswith(".apkg"):
+            # outputフォルダが存在する場合はフォルダごと削除
             if os.path.exists('output'):
                 shutil.rmtree('output')
 
-            output_file = os.path.splitext(file_path)[0] + ".json"
-            output_path = os.path.join(output_folder, output_file)
+            output_file = os.path.splitext(entry.name)[0] + ".json"
+            output_path = Path(output_folder) / output_file
 
-            extracted_path = extract_fields(os.path.join(folder_path, file_path), output_path, decknum)
+            # jsonファイルが存在する場合はスキップ
+            extracted_path = extract_fields(entry.path, output_path, decknum)
             decknum += 1
 
-            print(f"抽出・変換完了: {extracted_path}")
+            # jsonファイルを出力
+            print(f"Converted {extracted_path}")
 
             shutil.rmtree('output')
 
