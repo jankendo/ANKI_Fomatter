@@ -1,4 +1,5 @@
 import os
+import random
 import shutil
 import sqlite3
 import zipfile
@@ -47,7 +48,7 @@ def extract_fields(file_path, output_path, decknum):
                     "sentence": eng,
                     "blank": convert_to_blank_sentence(eng),
                     "japanese": jpn,
-                    "difficulty": "980"
+                    "difficulty": random.randint(1, 1000),
                 }
                 deck['cards'].append(card)
 
